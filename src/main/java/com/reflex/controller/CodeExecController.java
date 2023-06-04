@@ -244,7 +244,7 @@ public class CodeExecController {
         }
         
       // compile classes
-        String testsResult="";
+        List<String> testsResult = new ArrayList<>();
         boolean compileIsOk = true;
         UnitTestResultResponse response = new UnitTestResultResponse();
         // compile src
@@ -264,7 +264,7 @@ public class CodeExecController {
 	    Integer errorCode = Integer.parseInt(mainCompileResult.substring(errorCodeIndex+13 ,errorCodeIndex+14));	    
 	    if(errorCode == 1) {
 	    	compileIsOk = false;
-	    	testsResult = mainCompileResult;
+	    	testsResult.add(mainCompileResult);
 	    	response.setCompileIsOk(false);
    
 	  	  	// delete created folder
@@ -299,7 +299,7 @@ public class CodeExecController {
 		    errorCode = Integer.parseInt(testCompileResult.substring(errorCodeIndex+13 ,errorCodeIndex+14));	    
 		    if(errorCode == 1) {
 		    	compileIsOk = false;
-		    	testsResult = testCompileResult;
+		    	testsResult.add(testCompileResult);
 		    	response.setCompileIsOk(false);
 	     
 		  	  	// delete created folder
@@ -315,7 +315,7 @@ public class CodeExecController {
 	    }
 	    
 	    if(compileIsOk) {
-	    	
+	    String report="";
 	  // run unit tests
 		    for(String testClassName: testClassesNameList) {
 			    if (isWindows) {
@@ -328,22 +328,22 @@ public class CodeExecController {
 			    			+ "junit-platform-console-standalone-1.9.3.jar" + " --class-path" + " target"  + fs + "classes;target" + fs + "test_classes" 
 			    			+ " --select-class" + " com.cleverhire." + "java_project" + projectKey + "." + testClassName);
 			    }
-			    testsResult = testsResult + runProcess(processBuilder);
+			    report = runProcess(processBuilder);
+			    testsResult.add(report);
 		    }
 		    response.setCompileIsOk(true);
-	    }
 	  // delete created folder
-	    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch"));
-	    if (isWindows) {
-	    	processBuilder.command("cmd.exe", "/c", "rmdir /s /q " + projectKey);
-	    } 
-	    else if (isLinux){
-	    	processBuilder.command("sh", "-c", "rm -rf " + projectKey);
+		    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch"));
+		    if (isWindows) {
+		    	processBuilder.command("cmd.exe", "/c", "rmdir /s /q " + projectKey);
+		    } 
+		    else if (isLinux){
+		    	processBuilder.command("sh", "-c", "rm -rf " + projectKey);
+		    }
+		    runProcess(processBuilder);
 	    }
-	    runProcess(processBuilder);
 
-        String encodedtestResult = Base64.getEncoder().encodeToString(testsResult.getBytes(StandardCharsets.ISO_8859_1));
-        response.setResult(encodedtestResult);
+        response.setReport(testsResult);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	

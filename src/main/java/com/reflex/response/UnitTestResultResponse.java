@@ -1,8 +1,10 @@
 package com.reflex.response;
 
+import java.util.List;
+
 public class UnitTestResultResponse {
 	
-	private String report;
+	private List<String> report;
 	
 	private boolean compileIsOk;
 	
@@ -10,17 +12,17 @@ public class UnitTestResultResponse {
 
 	}
 	
-	public UnitTestResultResponse(String report, boolean compileIsOk) {
+	public UnitTestResultResponse(List<String> report, boolean compileIsOk) {
 		this.report = report;
 		this.compileIsOk = compileIsOk;
 	}
 
-	public String getResult() {
+	public List<String> getReport() {
 		return report;
 	}
 
-	public void setResult(String result) {
-		this.report = result;
+	public void setReport(List<String> report) {
+		this.report = report;
 	}
 
 	public boolean isCompileIsOk() {
@@ -30,5 +32,5 @@ public class UnitTestResultResponse {
 	public void setCompileIsOk(boolean compileIsOk) {
 		this.compileIsOk = compileIsOk;
 	}
-	
+
 }
