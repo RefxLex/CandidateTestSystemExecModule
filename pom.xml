@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.reflex</groupId>
 	<artifactId>CandidateTestSystemExecModule</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<name>CandidateTestSystemExecModule</name>
 	<description>Exec module for candidate test system application</description>
 	<properties>

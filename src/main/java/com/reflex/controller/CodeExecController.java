@@ -41,108 +41,6 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/exec-module")
 public class CodeExecController {
 	
-
-	@PostMapping("/setup")
-	public ResponseEntity<?> setupProjectsFolder(){
-		
-		// define OS
-		String fs = System.getProperty("file.separator");
-    	boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("windows");
-    	boolean isLinux = System.getProperty("os.name").toLowerCase().startsWith("linux");
-    	
-    	Path path = Paths.get(System.getProperty("user.home") + fs + "cadidate_test_system_projects");
-    	ProcessBuilder processBuilder = new ProcessBuilder();
-    	
-    	if(Files.exists(path)==false) {
-    		
-    		// create main, test_launch and lib folders
-	    	processBuilder.directory(new File(System.getProperty("user.home")));
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "mkdir cadidate_test_system_projects" + fs + "test_launch" + " " + "cadidate_test_system_projects" + fs
-	    				+ "lib");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "mkdir cadidate_test_system_projects" + fs + "test_launch" + " " + "cadidate_test_system_projects" + fs
-	    				+ "lib");
-	    	}
-	    	runProcess(processBuilder);
-
-	        // download JUnit 5 jars
-	    	processBuilder.directory(new File(System.getProperty("user.home")));
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.0:get" +
-	    	" -DrepoUrl=https://download.java.net/maven/2/ -Dartifact=org.junit.jupiter:junit-jupiter-api:5.9.2");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.0:get" +
-	    		    	" -DrepoUrl=https://download.java.net/maven/2/ -Dartifact=org.junit.jupiter:junit-jupiter-api:5.9.2");
-	    	}
-	    	runProcess(processBuilder);
-	        
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.0:get" +
-	    	" -DrepoUrl=https://download.java.net/maven/2/ -Dartifact=org.junit.jupiter:junit-jupiter-api:5.9.2");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "mvn org.apache.maven.plugins:maven-dependency-plugin:3.6.0:get" +
-	    	" -DrepoUrl=https://download.java.net/maven/2/ -Dartifact=org.junit.platform:junit-platform-console-standalone:1.9.3");
-	    	}
-	    	runProcess(processBuilder);
-	    	
-	    	// copy jars to lib folder
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "copy .m2" + fs + "repository" + fs + "org" + fs + "apiguardian" + fs + "apiguardian-api" + fs 
-	    				+ "1.1.2" + fs + "apiguardian-api-1.1.2.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "cp .m2" + fs + "repository" + fs + "org" + fs + "apiguardian" + fs + "apiguardian-api" + fs 
-	    				+ "1.1.2" + fs + "apiguardian-api-1.1.2.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	}
-	    	runProcess(processBuilder);
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "copy .m2" + fs + "repository" + fs + "org" + fs + "junit" + fs + "jupiter" + fs + "junit-jupiter-api" + fs
-	    				+ "5.9.2" + fs + "junit-jupiter-api-5.9.2.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "cp .m2" + fs + "repository" + fs + "org" + fs + "junit" + fs + "jupiter" + fs + "junit-jupiter-api" + fs
-	    				+ "5.9.2" + fs + "junit-jupiter-api-5.9.2.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	}
-	    	runProcess(processBuilder);
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "copy .m2" + fs + "repository" + fs + "org" + fs + "junit" + fs + "platform" + fs + "junit-platform-commons"
-	    	+ fs + "1.9.2" + fs + "junit-platform-commons-1.9.2.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "cp .m2" + fs + "repository" + fs + "org" + fs + "junit" + fs + "platform" + fs + "junit-platform-commons"
-	    		    	+ fs + "1.9.2" + fs + "junit-platform-commons-1.9.2.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	}
-	    	runProcess(processBuilder);
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "copy .m2" + fs + "repository" + fs +"org" + fs +"junit" + fs +"platform" + fs +
-	    				"junit-platform-console-standalone" + fs +"1.9.3" + fs + "junit-platform-console-standalone-1.9.3.jar" +
-	    				" cadidate_test_system_projects" + fs + "lib");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "cp .m2" + fs + "repository" + fs +"org" + fs +"junit" + fs +"platform" + fs +
-	    				"junit-platform-console-standalone" + fs +"1.9.3" + fs + "junit-platform-console-standalone-1.9.3.jar" +
-	    				" cadidate_test_system_projects" + fs + "lib");
-	    	}
-	    	runProcess(processBuilder);
-	    	if (isWindows) {
-	    		processBuilder.command("cmd.exe", "/c", "copy .m2" + fs + "repository" + fs +"org" + fs + "opentest4j" + fs + "opentest4j" + fs +
-	    				"1.2.0" + fs +"opentest4j-1.2.0.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	} 
-	    	else if (isLinux){
-	    		processBuilder.command("sh", "-c", "cp .m2" + fs + "repository" + fs +"org" + fs + "opentest4j" + fs + "opentest4j" + fs +
-	    				"1.2.0" + fs +"opentest4j-1.2.0.jar" + " cadidate_test_system_projects" + fs + "lib");
-	    	}
-	    	runProcess(processBuilder);
-    	}
-    	else {
-    		System.out.println("main directory already created, skipping...");
-    	}
-		return new ResponseEntity<>(HttpStatus.CREATED);
-	}
 	
 	@PostMapping("/test-launch")
 	public ResponseEntity<UnitTestResultResponse> runUserUnitTest(@Valid @RequestBody UserTaskRequest userTaskRequest){
@@ -179,7 +77,7 @@ public class CodeExecController {
 	    			+ "java_project" + projectKey + " " + projectKey + fs + "target" + fs + "classes" + " " + projectKey + fs + "target" + fs + "test_classes");
 	    } 
 	    else if (isLinux){
-	    	processBuilder.command("sh", "-c", "mkdir " + projectKey + fs + "src" + fs + "main" + fs + "java" + fs + "com" + fs + "cleverhire" + fs
+	    	processBuilder.command("sh", "-c", "mkdir -p " + projectKey + fs + "src" + fs + "main" + fs + "java" + fs + "com" + fs + "cleverhire" + fs
 	    			+ "java_project" + projectKey + " " + projectKey + fs + "src" + fs + "test" + fs + "java" + fs + "com" + fs + "cleverhire" + fs
 	    			+ "java_project" + projectKey + " " + projectKey + fs + "target" + fs + "classes" + " " + projectKey + fs + "target" + fs + "test_classes");
 	    }
@@ -254,8 +152,8 @@ public class CodeExecController {
 	    			+ "java_project" + projectKey + fs + "*.java");
 	    } 
 	    else if (isLinux){
-	    	processBuilder.command("sh", "-c", "javac -d target" + fs + "classes" + " src" + fs + "main" + fs + "java" + fs + "com" + fs + "cleverhire" + fs 
-	    			+ "java_project" + projectKey + fs + "*.java");
+	    	processBuilder.command("sh", "-c", "~/jdk-17.0.6/bin/javac -d target" + fs + "classes" + " src" + fs + "main" + fs + "java" + fs + "com" + fs 
+	    			+ "cleverhire" + fs + "java_project" + projectKey + fs + "*.java");
 	    }
 	    String mainCompileResult = runProcess(processBuilder);
 	    
@@ -289,8 +187,9 @@ public class CodeExecController {
 		    			+ projectKey + fs + "*.java");
 		    } 
 		    else if (isLinux){
-		    	processBuilder.command("sh", "-c", "javac -d target"+ fs + "classes" + fs + "test_classes" + " -cp ~" + fs + "cadidate_test_system_projects" + fs
-		    			+ "lib" + fs + "*;target" + " src" + fs + "test" + fs + "java" + fs + "com" + fs + "cleverhire" + fs + "java_project" + projectKey + fs + "*.java");
+		    	processBuilder.command("sh", "-c", "~/jdk-17.0.6/bin/javac -d target" + fs + "test_classes" + " -cp ~" + fs + "cadidate_test_system_projects" + fs
+		    			+ "lib" + fs + "*:target" + fs + "classes" + " src" + fs + "test" + fs + "java" + fs + "com" + fs + "cleverhire" + fs + "java_project" 
+		    			+ projectKey + fs + "*.java");
 		    }
 		    String testCompileResult = runProcess(processBuilder);
 		    
@@ -324,8 +223,8 @@ public class CodeExecController {
 			    			+ " --select-class" + " com.cleverhire." + "java_project" + projectKey + "." + testClassName);
 			    } 
 			    else if (isLinux){
-			    	processBuilder.command("sh", "-c", "java -jar" + " ~" + fs + "cadidate_test_system_projects" + fs + "lib" + fs
-			    			+ "junit-platform-console-standalone-1.9.3.jar" + " --class-path" + " target"  + fs + "classes;target" + fs + "test_classes" 
+			    	processBuilder.command("sh", "-c", "~/jdk-17.0.6/bin/java -jar" + " ~" + fs + "cadidate_test_system_projects" + fs + "lib" + fs
+			    			+ "junit-platform-console-standalone-1.9.3.jar" + " --class-path" + " target"  + fs + "classes:target" + fs + "test_classes" 
 			    			+ " --select-class" + " com.cleverhire." + "java_project" + projectKey + "." + testClassName);
 			    }
 			    report = runProcess(processBuilder);
