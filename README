@@ -1,0 +1,9 @@
+# for docker build
+lib.tar.gz
+	apiguardian-api-1.1.2.jar
+	junit-jupiter-api-5.9.2.jar
+	junit-platform-commons-1.9.2.jar
+	junit-platform-console-standalone-1.9.3.jar
+	opentest4j-1.2.0.jar
+
+link to jars https://disk.yandex.ru/d/hXtmePLlwYUIHg	

@@ -21,6 +21,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,6 +42,10 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/exec-module")
 public class CodeExecController {
 	
+	@GetMapping("/check") 
+	public ResponseEntity<String> checkAppIsRunning(){
+		return new ResponseEntity<>("OK", HttpStatus.OK);
+	}
 	
 	@PostMapping("/test-launch")
 	public ResponseEntity<UnitTestResultResponse> runUserUnitTest(@Valid @RequestBody UserTaskRequest userTaskRequest){
@@ -70,7 +75,7 @@ public class CodeExecController {
 		index = projectKey.indexOf(".");
 		projectKey = projectKey.substring(0, index) + "_" + projectKey.substring(index+1, projectKey.length());
 		
-	    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch"));
+	    processBuilder.directory(new File(System.getProperty("user.home") + fs + "candidate_test_system_projects" + fs + "test_launch"));
 	    if (isWindows) {
 	    	processBuilder.command("cmd.exe", "/c", "mkdir " + projectKey + fs + "src" + fs + "main" + fs + "java" + fs + "com" + fs + "cleverhire" + fs
 	    			+ "java_project" + projectKey + " " + projectKey + fs + "src" + fs + "test" + fs + "java" + fs + "com" + fs + "cleverhire" + fs
@@ -100,7 +105,7 @@ public class CodeExecController {
 	        // create className.java
 	        FileOutputStream fos;
 			try {
-				fos = new FileOutputStream(System.getProperty("user.home") + fs + "cadidate_test_system_projects"+ fs + "test_launch" + fs + projectKey + fs
+				fos = new FileOutputStream(System.getProperty("user.home") + fs + "candidate_test_system_projects"+ fs + "test_launch" + fs + projectKey + fs
 						+ "src" + fs + "main" + fs + "java" + fs + "com" + fs + "cleverhire" + fs + "java_project" + projectKey + fs + className +".java");
 				fos.write(codeDecoded.getBytes());
 		        fos.flush();
@@ -130,7 +135,7 @@ public class CodeExecController {
 	        // create className.java
 	        FileOutputStream fos;
 			try {
-				fos = new FileOutputStream(System.getProperty("user.home") + fs + "cadidate_test_system_projects"+ fs + "test_launch" + fs + projectKey + fs
+				fos = new FileOutputStream(System.getProperty("user.home") + fs + "candidate_test_system_projects"+ fs + "test_launch" + fs + projectKey + fs
 						+ "src" + fs + "test" + fs + "java" + fs + "com" + fs + "cleverhire" + fs + "java_project" + projectKey + fs + className +".java");
 				fos.write(codeDecoded.getBytes());
 		        fos.flush();
@@ -146,13 +151,13 @@ public class CodeExecController {
         boolean compileIsOk = true;
         UnitTestResultResponse response = new UnitTestResultResponse();
         // compile src
-	    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch" + fs + projectKey));
+	    processBuilder.directory(new File(System.getProperty("user.home") + fs + "candidate_test_system_projects" + fs + "test_launch" + fs + projectKey));
 	    if (isWindows) {
 	    	processBuilder.command("cmd.exe", "/c", "javac -d target" + fs + "classes" + " src" + fs + "main" + fs + "java" + fs + "com" + fs + "cleverhire" + fs 
 	    			+ "java_project" + projectKey + fs + "*.java");
 	    } 
 	    else if (isLinux){
-	    	processBuilder.command("sh", "-c", "~/jdk-17.0.6/bin/javac -d target" + fs + "classes" + " src" + fs + "main" + fs + "java" + fs + "com" + fs 
+	    	processBuilder.command("sh", "-c", "/opt/jdk-17.0.6/bin/javac -d target" + fs + "classes" + " src" + fs + "main" + fs + "java" + fs + "com" + fs 
 	    			+ "cleverhire" + fs + "java_project" + projectKey + fs + "*.java");
 	    }
 	    String mainCompileResult = runProcess(processBuilder);
@@ -166,7 +171,7 @@ public class CodeExecController {
 	    	response.setCompileIsOk(false);
    
 	  	  	// delete created folder
-		    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch"));
+		    processBuilder.directory(new File(System.getProperty("user.home") + fs + "candidate_test_system_projects" + fs + "test_launch"));
 		    if (isWindows) {
 		    	processBuilder.command("cmd.exe", "/c", "rmdir /s /q " + projectKey);
 		    } 
@@ -180,14 +185,14 @@ public class CodeExecController {
 	    if(compileIsOk) {
 	    	
 		  // compile test
-		    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch" + fs + projectKey));
+		    processBuilder.directory(new File(System.getProperty("user.home") + fs + "candidate_test_system_projects" + fs + "test_launch" + fs + projectKey));
 		    if (isWindows) {
-		    	processBuilder.command("cmd.exe", "/c", "javac -d target" + fs + "test_classes" + " -cp %USERPROFILE%" + fs + "cadidate_test_system_projects" + fs 
+		    	processBuilder.command("cmd.exe", "/c", "javac -d target" + fs + "test_classes" + " -cp %USERPROFILE%" + fs + "candidate_test_system_projects" + fs 
 		    			+ "lib" + fs + "*;target" + fs + "classes" + " src" + fs + "test" + fs + "java" + fs + "com" + fs + "cleverhire" + fs + "java_project" 
 		    			+ projectKey + fs + "*.java");
 		    } 
 		    else if (isLinux){
-		    	processBuilder.command("sh", "-c", "~/jdk-17.0.6/bin/javac -d target" + fs + "test_classes" + " -cp ~" + fs + "cadidate_test_system_projects" + fs
+		    	processBuilder.command("sh", "-c", "/opt/jdk-17.0.6/bin/javac -d target" + fs + "test_classes" + " -cp ~" + fs + "candidate_test_system_projects" + fs
 		    			+ "lib" + fs + "*:target" + fs + "classes" + " src" + fs + "test" + fs + "java" + fs + "com" + fs + "cleverhire" + fs + "java_project" 
 		    			+ projectKey + fs + "*.java");
 		    }
@@ -202,7 +207,7 @@ public class CodeExecController {
 		    	response.setCompileIsOk(false);
 	     
 		  	  	// delete created folder
-			    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch"));
+			    processBuilder.directory(new File(System.getProperty("user.home") + fs + "candidate_test_system_projects" + fs + "test_launch"));
 			    if (isWindows) {
 			    	processBuilder.command("cmd.exe", "/c", "rmdir /s /q " + projectKey);
 			    } 
@@ -218,12 +223,12 @@ public class CodeExecController {
 	  // run unit tests
 		    for(String testClassName: testClassesNameList) {
 			    if (isWindows) {
-			    	processBuilder.command("cmd.exe", "/c", "java -jar" + " %USERPROFILE%" + fs + "cadidate_test_system_projects" + fs + "lib" + fs
+			    	processBuilder.command("cmd.exe", "/c", "java -jar" + " %USERPROFILE%" + fs + "candidate_test_system_projects" + fs + "lib" + fs
 			    			+ "junit-platform-console-standalone-1.9.3.jar" + " --class-path" + " target" + fs + "classes;target" + fs + "test_classes" 
 			    			+ " --select-class" + " com.cleverhire." + "java_project" + projectKey + "." + testClassName);
 			    } 
 			    else if (isLinux){
-			    	processBuilder.command("sh", "-c", "~/jdk-17.0.6/bin/java -jar" + " ~" + fs + "cadidate_test_system_projects" + fs + "lib" + fs
+			    	processBuilder.command("sh", "-c", "/opt/jdk-17.0.6/bin/java -jar" + " ~" + fs + "candidate_test_system_projects" + fs + "lib" + fs
 			    			+ "junit-platform-console-standalone-1.9.3.jar" + " --class-path" + " target"  + fs + "classes:target" + fs + "test_classes" 
 			    			+ " --select-class" + " com.cleverhire." + "java_project" + projectKey + "." + testClassName);
 			    }
@@ -232,7 +237,7 @@ public class CodeExecController {
 		    }
 		    response.setCompileIsOk(true);
 	  // delete created folder
-		    processBuilder.directory(new File(System.getProperty("user.home") + fs + "cadidate_test_system_projects" + fs + "test_launch"));
+		    processBuilder.directory(new File(System.getProperty("user.home") + fs + "candidate_test_system_projects" + fs + "test_launch"));
 		    if (isWindows) {
 		    	processBuilder.command("cmd.exe", "/c", "rmdir /s /q " + projectKey);
 		    } 
